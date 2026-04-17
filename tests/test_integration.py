@@ -23,6 +23,8 @@ from fluvius_energy_api.models.enums import DataServiceType, MandateStatus
 
 import polars_fluvius as pf
 
+pytestmark = pytest.mark.integration
+
 # Test EAN for sandbox - must match pattern: 5414[4-5][0-1][0-2][0-2][0-2]000000[0-9][0-9][0-9]
 TEST_EAN = "541450000000000001"
 

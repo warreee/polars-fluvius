@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "polars-fluvius"
-version = "0.2.1"
+version = "0.2.2"
 description = "Polars IO source for Fluvius Energy API"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -61,3 +61,6 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+markers = [
+    "integration: hits real Fluvius sandbox API (requires credentials and allow-listed IP)",
+]

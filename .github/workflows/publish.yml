@@ -24,7 +24,7 @@ jobs:
       - uses: astral-sh/setup-uv@v5
       - run: uv python install
       - run: uv sync --all-extras --dev
-      - run: uv run pytest
+      - run: uv run pytest -m "not integration"
       - run: uv build
       - uses: actions/upload-artifact@v4
         with:
