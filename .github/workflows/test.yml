@@ -1,0 +1,26 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FLUVIUS_SUBSCRIPTION_KEY: ${{ secrets.FLUVIUS_SUBSCRIPTION_KEY }}
+      FLUVIUS_SANDBOX_CLIENT_ID: ${{ secrets.FLUVIUS_SANDBOX_CLIENT_ID }}
+      FLUVIUS_TENANT_ID: ${{ secrets.FLUVIUS_TENANT_ID }}
+      FLUVIUS_SCOPE: ${{ secrets.FLUVIUS_SCOPE }}
+      FLUVIUS_DATA_ACCESS_CONTRACT_NUMBER: ${{ secrets.FLUVIUS_DATA_ACCESS_CONTRACT_NUMBER }}
+      FLUVIUS_SANDBOX_CLIENT_SECRET: ${{ secrets.FLUVIUS_SANDBOX_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv python install
+      - run: uv sync --all-extras --dev
+      - run: uv run pytest
+      - run: uv build

@@ -1,0 +1,45 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      FLUVIUS_SUBSCRIPTION_KEY: ${{ secrets.FLUVIUS_SUBSCRIPTION_KEY }}
+      FLUVIUS_SANDBOX_CLIENT_ID: ${{ secrets.FLUVIUS_SANDBOX_CLIENT_ID }}
+      FLUVIUS_TENANT_ID: ${{ secrets.FLUVIUS_TENANT_ID }}
+      FLUVIUS_SCOPE: ${{ secrets.FLUVIUS_SCOPE }}
+      FLUVIUS_DATA_ACCESS_CONTRACT_NUMBER: ${{ secrets.FLUVIUS_DATA_ACCESS_CONTRACT_NUMBER }}
+      FLUVIUS_SANDBOX_CLIENT_SECRET: ${{ secrets.FLUVIUS_SANDBOX_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv python install
+      - run: uv sync --all-extras --dev
+      - run: uv run pytest
+      - run: uv build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/polars-fluvius
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
